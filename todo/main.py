@@ -1,8 +1,9 @@
 from fastapi import FastAPI
 from routes.todo import todo_router
 from fastapi.middleware.cors import CORSMiddleware
+from core.lifespan import lifespan
 
-app = FastAPI()
+app = FastAPI(title="Todo Project", version="1.0", lifespan=lifespan)
 
 # CORS 설정
 app.add_middleware(
