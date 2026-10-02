@@ -1,0 +1,79 @@
+# CRUD
+from sqlalchemy.orm import Session
+from sqlalchemy import select
+from schemas.user import UserCreate, UserLogin, NameChange, PasswordChange, EmailChange
+from repository.models.user import User
+from exceptions.user import (
+    UserExistingException,
+    InvalidPasswordException,
+    UserNotFoundException,
+    SamePasswordException,
+)
+from core.security import hash_password, verify_password
+
+
+def update_name(user_id: int, db: Session, data: NameChange):
+    user = db.get(User, user_id)
+
+    if user is None:
+        raise UserNotFoundException
+
+    user.name = data.name
+    db.commit()
+    db.refresh(user)
+    return user
+
+
+def update_email(user_id: int, db: Session, data: EmailChange):
+    user = db.get(User, user_id)
+
+    if user is None:
+        raise UserNotFoundException
+
+    user.email = data.email
+    db.commit()
+    db.refresh(user)
+    return user
+
+
+def update_password(user_id: int, db: Session, data: PasswordChange):
+    user = db.get(User, user_id)
+
+    if user is None:
+        raise UserNotFoundException
+
+    if not verify_password(data.current_password, user.password):
+        raise InvalidPasswordException
+
+    if verify_password(data.new_password, user.password):
+        raise SamePasswordException
+
+    user.password = hash_password(data.new_password)
+    db.commit()
+    db.refresh(user)
+    return user
+
+
+# 비밀번호 => 암호화
+def register(db: Session, data: UserCreate):
+    # 동일한 이메일로 가입된 정보가 있는가?
+    existing_user = db.scalar(select(User).where(User.email == data.email))
+    if existing_user:
+        raise UserExistingException
+    # 가입된 정보가 없을 때 회원가입
+    user = User(email=data.email, password=hash_password(data.password), name=data.name)
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
+
+
+def authenticate(db: Session, data: UserLogin):
+
+    user = db.scalar(select(User).where(User.email == data.email))
+    if user is None:
+        raise UserNotFoundException
+
+    if not verify_password(data.password, user.password):
+        raise InvalidPasswordException
+    return user
