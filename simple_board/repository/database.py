@@ -21,15 +21,15 @@ class Base(DeclarativeBase):
     pass
 
 
-def init_db():
-    from repository.models.board import Board
-    from repository.models.user import User
-    from repository.models.comment import Comment
+# def init_db():
+#     from repository.models.board import Board
+#     from repository.models.user import User
+#     from repository.models.comment import Comment
 
-    # Base.metadata에 등록된 테이블 생성 (없을때만)
-    # 컬럼 수정 반영 못해줌 => 다른 도구 필요
-    Base.metadata.create_all(bind=engine)
-    print("테이블 초기화 완료")
+#     # Base.metadata에 등록된 테이블 생성 (없을때만)
+#     # 컬럼 수정 반영 못해줌 => 다른 도구 필요
+#     Base.metadata.create_all(bind=engine)
+#     print("테이블 초기화 완료")
 
 
 # API 요청 하나에서 사용할 DB session 만들어주고 요청이 완료되면 닫기

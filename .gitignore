@@ -1,6 +1,16 @@
 # File created using '.gitignore Generator' for Visual Studio Code: https://bit.ly/vscode-gig
-# Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,macos,python
-# Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,macos,python
+# Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,macos,database,python,venv
+# Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,macos,database,python,venv
+
+### Database ###
+*.accdb
+*.db
+*.dbf
+*.mdb
+*.pdb
+*.sqlite3
+*.db-shm
+*.db-wal
 
 ### macOS ###
 # General
@@ -207,6 +217,18 @@ poetry.toml
 # LSP config files
 pyrightconfig.json
 
+### venv ###
+# Virtualenv
+# http://iamzed.com/2009/05/07/a-primer-on-virtualenv/
+[Bb]in
+[Ii]nclude
+[Ll]ib
+[Ll]ib64
+[Ll]ocal
+[Ss]cripts
+pyvenv.cfg
+pip-selfcheck.json
+
 ### VisualStudioCode ###
 .vscode/*
 !.vscode/settings.json
@@ -226,7 +248,7 @@ pyrightconfig.json
 .history
 .ionide
 
-# End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,macos,python
+# End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,macos,database,python,venv
 
 # Custom rules (everything added below won't be overriden by 'Generate .gitignore File' if you use 'Update' option)
 

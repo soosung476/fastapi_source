@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from schemas.comment import CommentCreate, CommentUpdate
 from repository.models.comment import Comment
 from exceptions.board import CommentNotFoundException
+from exceptions.user import UserCredentialsException
 
 
 def comment_create(data: CommentCreate, db: Session):

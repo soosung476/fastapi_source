@@ -1,5 +1,5 @@
 from repository.database import Base
-from sqlalchemy import String, Identity, DateTime, ForeignKey
+from sqlalchemy import String, Identity, DateTime, ForeignKey, Integer
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 from datetime import datetime
 
@@ -26,5 +26,11 @@ class Board(Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime, default=datetime.now, onupdate=datetime.now
     )
+    # 조회수 컬럼
+    views: Mapped[int] = mapped_column(
+        Integer, nullable=False, default=0, server_default="0"
+    )
     user: Mapped["User"] = relationship(back_populates="boards")
-    comments: Mapped[list["Comment"]] = relationship(back_populates="board")
+    comments: Mapped[list["Comment"]] = relationship(
+        back_populates="board", order_by="Comment.created_at.desc()"
+    )

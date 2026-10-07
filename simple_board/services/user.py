@@ -1,7 +1,14 @@
 # CRUD
 from sqlalchemy.orm import Session
 from sqlalchemy import select
-from schemas.user import UserCreate, UserLogin, NameChange, PasswordChange, EmailChange
+from schemas.user import (
+    UserCreate,
+    UserLogin,
+    NameChange,
+    PasswordChange,
+    EmailChange,
+    Token,
+)
 from repository.models.user import User
 from exceptions.user import (
     UserExistingException,
@@ -10,6 +17,9 @@ from exceptions.user import (
     SamePasswordException,
 )
 from core.security import hash_password, verify_password
+from Utils.security import create_access_token
+
+DUMMY_HASH = hash_password("dummypassword")
 
 
 def update_name(user_id: int, db: Session, data: NameChange):
@@ -68,12 +78,27 @@ def register(db: Session, data: UserCreate):
     return user
 
 
+# 현재 로그인된 사용자를 반환하는 함수.
+
+
+def get_user(db: Session, user_id: int) -> User:
+    user = db.get(User, user_id)
+    if user is None:
+        raise UserNotFoundException
+
+    return user
+
+
 def authenticate(db: Session, data: UserLogin):
 
     user = db.scalar(select(User).where(User.email == data.email))
     if user is None:
+        # Timing attack 방지
+        verify_password(data.password, DUMMY_HASH)
         raise UserNotFoundException
 
     if not verify_password(data.password, user.password):
         raise InvalidPasswordException
-    return user
+
+    access_token = create_access_token(data={"sub": str(user.user_id)})
+    return Token(access_token=access_token)

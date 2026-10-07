@@ -4,3 +4,7 @@ class BoardNotFoundException(Exception):
 
 class CommentNotFoundException(Exception):
     pass
+
+
+class BoardForbiddenException(Exception):
+    pass

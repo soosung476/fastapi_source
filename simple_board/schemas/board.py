@@ -20,10 +20,8 @@ class CommentResponse(BaseModel):
 
 
 class BoardCreate(BaseModel):
-
     title: str
     contents: str
-    user_id: int
 
 
 class BoardUpdate(BaseModel):
@@ -49,6 +47,8 @@ class BoardPageResponse(BaseModel):
     page: int
     size: int
     total_pages: int
+    criteria: str
+    keyword: str
 
 
 class Comment(BaseModel):

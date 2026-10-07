@@ -13,6 +13,7 @@ from schemas.user import (
     NameChange,
     PasswordChange,
     EmailChange,
+    Token,
 )
 from fastapi import Depends
 from sqlalchemy.orm import Session
@@ -23,6 +24,8 @@ from exceptions.user import (
     InvalidPasswordException,
     SamePasswordException,
 )
+from repository.models.user import User
+from core.dependencies import get_current_user
 
 auth_router = APIRouter(tags=["Users"])
 
@@ -39,8 +42,12 @@ auth_router = APIRouter(tags=["Users"])
 # 이름 수정
 # /auth/user_id/name + patch
 
+
 # email 수정
 # /auth/user_id/email + patch
+@auth_router.get("/me", response_model=UserResponse)
+async def read_me(current_user: User = Depends(get_current_user)) -> UserResponse:
+    return current_user
 
 
 @auth_router.post("", response_model=dict)
@@ -55,10 +62,10 @@ async def post_signup(data: UserCreate, db: Session = Depends(get_db)) -> dict:
     return {"message": "회원가입이 완료되었습니다.", "user_id": user.user_id}
 
 
-@auth_router.post("/login", response_model=UserResponse)
-async def post_signin(data: UserLogin, db: Session = Depends(get_db)) -> UserResponse:
+@auth_router.post("/login", response_model=Token)
+async def post_signin(data: UserLogin, db: Session = Depends(get_db)) -> Token:
     try:
-        user = authenticate(db=db, data=data)
+        token = authenticate(db=db, data=data)
     except UserNotFoundException:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -70,7 +77,7 @@ async def post_signin(data: UserLogin, db: Session = Depends(get_db)) -> UserRes
             detail="아이디나 비밀번호를 확인해주세요.",
         )
 
-    return user
+    return token
 
 
 @auth_router.patch("/{user_id}/name", response_model=dict)
