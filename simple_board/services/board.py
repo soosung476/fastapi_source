@@ -69,7 +69,7 @@ def select_all(db: Session, page: int, size: int, criteria: str, keyword: str):
     if keyword:
         if criteria == "tc":
             query = query.filter(
-                Board.title.contains(keyword) | Board.title.contains(keyword)
+                Board.title.contains(keyword) | Board.contents.contains(keyword)
             )
         elif criteria == "t":
             query = query.filter(Board.title.contains(keyword))
