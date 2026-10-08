@@ -7,6 +7,7 @@ from services.board import (
     select_all,
     select_one,
     select_recents,
+    update_views,
 )
 from sqlalchemy.orm import Session
 from fastapi import Depends
@@ -68,6 +69,7 @@ async def get_board(
 ):
     try:
         board = select_one(db=db, id=id)
+        update_views(board=board, db=db, current_user=current_user)
     except BoardNotFoundException:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

@@ -16,3 +16,4 @@ class SamePasswordException(Exception):
 
 class UserCredentialsException(Exception):
     pass
+

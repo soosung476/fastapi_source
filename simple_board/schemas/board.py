@@ -35,6 +35,7 @@ class BoardResponse(BaseModel):
     title: str
     contents: str
     created_at: datetime
+    views: int
     # 게시글 작성자 이름
     user: UserResponse
     # 댓글목록
